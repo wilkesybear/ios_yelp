@@ -12,20 +12,24 @@
 	<dict>
 		<key>5E90F68A7CCE5E88EE12B1F7953ABF55B91463BC</key>
 		<string>https://github.com/codepath/ios_yelp_swift.git</string>
+		<key>CB184010B6FCC2C74F2B8368D85F9CF2F894EF1D</key>
+		<string>https://github.com/wilkesybear/ios_yelp.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Yelp.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>5E90F68A7CCE5E88EE12B1F7953ABF55B91463BC</key>
+		<string>../../ios_yelp_swift</string>
+		<key>CB184010B6FCC2C74F2B8368D85F9CF2F894EF1D</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/codepath/ios_yelp_swift.git</string>
+	<string>https://github.com/wilkesybear/ios_yelp.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>5E90F68A7CCE5E88EE12B1F7953ABF55B91463BC</string>
+	<string>CB184010B6FCC2C74F2B8368D85F9CF2F894EF1D</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
@@ -35,6 +39,14 @@
 			<string>5E90F68A7CCE5E88EE12B1F7953ABF55B91463BC</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ios_yelp_swift</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CB184010B6FCC2C74F2B8368D85F9CF2F894EF1D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>yelp</string>
 		</dict>
 	</array>
 </dict>
