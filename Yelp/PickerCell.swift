@@ -27,12 +27,10 @@ class PickerCell: UITableViewCell {
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
     
     @IBAction func dropDownClicked(sender: AnyObject) {
-        println("image tapped")
         delegate?.pickerCell?(self, didClickExpand: true)
     }
 }

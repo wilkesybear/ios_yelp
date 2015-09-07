@@ -16,7 +16,7 @@ enum FilterSections: Int {
     case Deal = 0, Distance, SortBy, Category
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, PickerCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, PickerCellDelegate, ShowMoreViewCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -37,7 +37,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         1,
         1,
         1,
-        0 // stubbed out since handled differently
+        6 // show a few first, then potentially expand
     ]
     
     var preferences: Preferences!
@@ -110,15 +110,14 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == FilterSections.Category.rawValue {
-            return categories.count
-        } else {
-            return sectionRowCounts[section]
+        if section == FilterSections.Category.rawValue && sectionRowCounts[section] == 0 {
+                return categories.count
         }
+        
+        return sectionRowCounts[section]
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        println(indexPath.row)
         switch(indexPath.section) {
         case FilterSections.Deal.rawValue:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
@@ -162,13 +161,20 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             return cell
             
         default:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-            
-            cell.delegate = self
-            cell.switchLabel.text = categories[indexPath.row]["name"]
-            cell.onSwitch.on = switchStates[indexPath.row] ?? false
-            
-            return cell
+            let rowCount = sectionRowCounts[FilterSections.Category.rawValue]
+            if rowCount > 0 && indexPath.row == rowCount - 1 {
+                let cell = tableView.dequeueReusableCellWithIdentifier("ShowMoreViewCell", forIndexPath: indexPath) as! ShowMoreViewCell
+                cell.delegate = self
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+                
+                cell.delegate = self
+                cell.switchLabel.text = categories[indexPath.row]["name"]
+                cell.onSwitch.on = switchStates[indexPath.row] ?? false
+                
+                return cell
+            }
         }
     }
     
@@ -193,6 +199,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         } else if section == FilterSections.SortBy.rawValue {
             sectionRowCounts[section] = sectionRowCounts[section] == 1 ? 3 : 1
         }
+        tableView.reloadData()
+    }
+    
+    func showMoreViewCell(showMoreViewCell: ShowMoreViewCell, clicked value: Bool) {
+        sectionRowCounts[FilterSections.Category.rawValue] = 0
         tableView.reloadData()
     }
     
