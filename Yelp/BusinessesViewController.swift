@@ -22,7 +22,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
         
         preferences.deals = false
-        preferences.sort = .Distance
+        preferences.sortName = "Shortest Distance"
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -32,8 +32,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         searchBar.text = "Restaurants"
         searchBar.delegate = self
         searchBar.showsCancelButton = true
+        searchBar.barTintColor = UIColor.whiteColor()
         
         navigationItem.titleView = searchBar
+        navigationController!.navigationBar.barTintColor = UIColor(red:0.753, green:0.063, blue:0.004, alpha:1.00)
         
         search(nil)
     }
@@ -91,7 +93,11 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     }
     
     func search(term: String?) {
-        Business.searchWithTerm(term ?? "Restaurants", sort: preferences.sort, categories: preferences.categories, deals: preferences.deals, radius: preferences.radius) { (businesses: [Business]!, error: NSError!) -> Void in
+        
+        let radiusValue = preferences.stringToRadius()
+        let sortValue = preferences.stringToSortByValue()
+        
+        Business.searchWithTerm(term ?? "Restaurants", sort: sortValue, categories: preferences.categories, deals: preferences.deals, radius: radiusValue) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }

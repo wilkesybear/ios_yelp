@@ -125,6 +125,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Yelp Search" id="l2p-ON-1Jd">
                         <barButtonItem key="leftBarButtonItem" title="Filters" id="nFD-pd-Xu8">
+                            <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <connections>
                                 <segue destination="yCu-3J-51D" kind="modal" id="oeW-Cc-bim"/>
                             </connections>
@@ -182,12 +183,43 @@
                                             <outlet property="switchLabel" destination="5o6-X0-ljh" id="2Di-Nf-ywt"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="DropDownCell" rowHeight="88" id="0Mg-L4-Vee" customClass="SwitchCell" customModule="Yelp" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="PickerCell" rowHeight="77" id="0Mg-L4-Vee" customClass="PickerCell" customModule="Yelp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="0Mg-L4-Vee" id="ui0-4m-rcF">
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Best Match" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wj6-cN-0Xe">
+                                                    <rect key="frame" x="8" y="8" width="88" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="emC-To-qL5">
+                                                    <rect key="frame" x="274" y="4" width="30" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="30" id="8Ds-XH-8Ha"/>
+                                                        <constraint firstAttribute="height" constant="30" id="MTi-A8-FHN"/>
+                                                    </constraints>
+                                                    <state key="normal" image="down arrow.png">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="dropDownClicked:" destination="0Mg-L4-Vee" eventType="touchUpInside" id="Jwi-FN-B4D"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="wj6-cN-0Xe" firstAttribute="top" secondItem="ui0-4m-rcF" secondAttribute="top" constant="8" id="JHq-8W-p6C"/>
+                                                <constraint firstAttribute="trailing" secondItem="emC-To-qL5" secondAttribute="trailing" constant="16" id="Rlr-4f-p76"/>
+                                                <constraint firstItem="wj6-cN-0Xe" firstAttribute="leading" secondItem="ui0-4m-rcF" secondAttribute="leading" constant="8" id="xK9-mz-61n"/>
+                                                <constraint firstItem="wj6-cN-0Xe" firstAttribute="centerY" secondItem="emC-To-qL5" secondAttribute="centerY" id="xan-2G-hif"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="dropDownButton" destination="emC-To-qL5" id="YR4-PT-9fu"/>
+                                            <outlet property="topNameLabel" destination="wj6-cN-0Xe" id="UN6-Qr-dhQ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -257,6 +289,9 @@
             <point key="canvasLocation" x="1772" y="338"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="down arrow.png" width="48" height="48"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

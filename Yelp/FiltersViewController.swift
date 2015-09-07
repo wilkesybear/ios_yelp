@@ -16,7 +16,7 @@ enum FilterSections: Int {
     case Deal = 0, Distance, SortBy, Category
 }
 
-class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, SwitchCellDelegate, PickerCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -33,6 +33,13 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         "Category"
     ]
     
+    var sectionRowCounts = [
+        1,
+        1,
+        1,
+        0 // stubbed out since handled differently
+    ]
+    
     var preferences: Preferences!
     
     override func viewDidLoad() {
@@ -45,6 +52,26 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 80 // only used for scroll height dimension
         
+        navigationController!.navigationBar.tintColor = UIColor.whiteColor()
+        navigationController!.navigationBar.barTintColor = UIColor(red:0.753, green:0.063, blue:0.004, alpha:1.00)
+
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if indexPath.section == FilterSections.Distance.rawValue {
+            let cell = tableView.cellForRowAtIndexPath(indexPath) as! PickerCell
+            preferences.radius = cell.topNameLabel.text
+            sectionRowCounts[FilterSections.Distance.rawValue] = 1
+            tableView.reloadData()
+        } else if indexPath.section == FilterSections.SortBy.rawValue {
+            let cell = tableView.cellForRowAtIndexPath(indexPath) as! PickerCell
+            preferences.sortName = cell.topNameLabel.text
+            sectionRowCounts[FilterSections.SortBy.rawValue] = 1
+            tableView.reloadData()
+        }
+        
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 
     override func didReceiveMemoryWarning() {
@@ -86,7 +113,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         if section == FilterSections.Category.rawValue {
             return categories.count
         } else {
-            return 1
+            return sectionRowCounts[section]
         }
     }
     
@@ -97,27 +124,43 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
             
             cell.delegate = self
-            cell.switchLabel.text = "Offering a deal"
+            cell.switchLabel.text = "Offering a deal?"
             cell.onSwitch.on = preferences.deals!
             
             return cell
 
         case FilterSections.Distance.rawValue:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as! PickerCell
+
+            
+            if indexPath.row != 0 || sectionRowCounts[indexPath.section] != 1 {
+                cell.dropDownButton.hidden = true
+                cell.topNameLabel.text = preferences.radiusValues[indexPath.row]
+            } else {
+                cell.dropDownButton.hidden = false
+                cell.topNameLabel.text = preferences.radius ?? "Best Match"
+            }
             
             cell.delegate = self
-            cell.switchLabel.text = "Offering a deal"
-            cell.onSwitch.on = preferences.deals!
             
             return cell
         case FilterSections.SortBy.rawValue:
-            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as! PickerCell
             
+            cell.topNameLabel.text = preferences.sortName ?? "Best Match"
+            
+            if indexPath.row != 0  || sectionRowCounts[indexPath.section] != 1 {
+                cell.dropDownButton.hidden = true
+                cell.topNameLabel.text = preferences.sortByValues[indexPath.row]
+            } else {
+                cell.dropDownButton.hidden = false
+                cell.topNameLabel.text = preferences.sortName ?? "Best Match"
+            }
+        
             cell.delegate = self
-            cell.switchLabel.text = "Offering a deal"
-            cell.onSwitch.on = preferences.deals!
             
             return cell
+            
         default:
             let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
             
@@ -140,8 +183,17 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         default:
             switchStates[index.row] = value
         }
+    }
+    
+    func pickerCell(pickerCell: PickerCell, didClickExpand value: Bool) {
+        let section = tableView.indexPathForCell(pickerCell)!.section as Int
         
-        println("filters view controller got switch event")
+        if section == FilterSections.Distance.rawValue {
+            sectionRowCounts[section] = sectionRowCounts[section] == 1 ? 5 : 1
+        } else if section == FilterSections.SortBy.rawValue {
+            sectionRowCounts[section] = sectionRowCounts[section] == 1 ? 3 : 1
+        }
+        tableView.reloadData()
     }
     
     /*
