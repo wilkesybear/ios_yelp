@@ -8,28 +8,34 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
     var businesses: [Business]!
     
+    var searchBar = UISearchBar()
+    
+    var preferences = Preferences()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        preferences.deals = false
+        preferences.sort = .Distance
         
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120 // only used for scroll height dimension
         
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["burgers", "thai"], deals: false) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
-            self.tableView.reloadData()
-            for business in businesses {
-                println(business.name!)
-                println(business.address!)
-            }
-        }
+        searchBar.text = "Restaurants"
+        searchBar.delegate = self
+        searchBar.showsCancelButton = true
+        
+        navigationItem.titleView = searchBar
+        
+        search(nil)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -62,14 +68,30 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         let filtersViewController = navigationController.topViewController as! FiltersViewController
         
         filtersViewController.delegate = self
+        filtersViewController.preferences = preferences
     }
 
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters preferences: Preferences?) {
         
-        var categories = filters["categories"] as? [String]
-        
-        Business.searchWithTerm("Restaurants", sort: nil, categories: categories, deals: nil) {
-            (businesses: [Business]!, error: NSError!) -> Void in
+        if let prefs = preferences {
+            self.preferences = prefs
+        }
+        search(searchBar.text)
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        search(searchBar.text)
+        searchBar.endEditing(true)
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = "Restaurants"
+        search(searchBar.text)
+        searchBar.endEditing(true)
+    }
+    
+    func search(term: String?) {
+        Business.searchWithTerm(term ?? "Restaurants", sort: preferences.sort, categories: preferences.categories, deals: preferences.deals, radius: preferences.radius) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }
