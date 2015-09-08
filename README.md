@@ -31,6 +31,6 @@ Time spent: `10`
 
 ### Walkthrough
 
-![Video Walkthrough](...)
+![Video Walkthrough](demo.gif)
 
 
